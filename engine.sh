@@ -92,6 +92,7 @@ function choice {
     i=1
 
     echo "$WHITE"
+    echo -n "  "
     typewrite "$1"
     echo
 
@@ -99,8 +100,10 @@ function choice {
     while [[ $# -gt 1 ]]; do
         choices[$i]=$2
 
-        echo -n $(gencolor "$i")
-        echo "$i. $1"
+        echo -n $(gencolor "$1")
+        echo -n "    $i. "
+        typewrite "$1"
+        echo
         i=$((i + 1))
         shift 2
     done
@@ -113,21 +116,17 @@ function choice {
         echo "Invalid choice."
     done
 
-    func="${choices[$choice]}"
-    eval $func
+    eval ${choices[$choice]}
 } 
 
 function cleanup {
     # Stop lingering music processes.
-    echo
     killall "$MUSICCMD" >/dev/null 2>&1
 
+    clear
     exit
 }
 trap 'cleanup' INT TERM EXIT
 
 source ./script.sh
 main
-
-echo
-killall "$MUSICCMD" >/dev/null 2>&1
