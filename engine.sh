@@ -13,7 +13,6 @@ TYPEDELAY=0.02
 # Engine.
 CURRSPRITE=
 BASE=$(dirname "$0")
-ORIG_SSTY=$(stty -g)
 
 stty -echo
 
@@ -112,11 +111,10 @@ function choice {
     done
 
     while true; do
-        read -r -n1 -p "             $WHITE Choice: [1..$((i - 1))]: " choice
+        read -r -n1 -p "$(echo -e '\r')             $WHITE Choice: [1..$((i - 1))]: " choice
         if [[ ! -z "${choices[$choice]}" ]]; then
             break
         fi
-        echo "Invalid choice."
     done
 
     eval ${choices[$choice]}
@@ -126,7 +124,7 @@ function cleanup {
     # Stop lingering music processes.
     killall "$MUSICCMD" >/dev/null 2>&1
 
-    stty $(ORIG_STTY)
+    stty echo
     clear
     exit
 }
