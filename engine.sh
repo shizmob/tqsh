@@ -38,13 +38,11 @@ function gencolor {
 }
 
 function pause {
-    read -n1 -r
+    read -r -n1
 }
 
 function play_core {
-    while true; do
-        if ! "$PLAYMUSIC" "$BASE/assets/$1"; then break; fi
-    done
+    while "$PLAYMUSIC" "$BASE/assets/$1"; do true; done
 }
 
 function play {
@@ -80,7 +78,7 @@ function show {
     CURRSPRITE=$1
     echo -n "$C"
     if [[ ! -z $CURRSPRITE ]]; then
-        ./bin/$(uname -s)-jp2a --color --chars="   ...',; clodxkO0KXNWM" --background=dark --height=50 "$BASE/assets/$1.jpg" 2>/dev/null
+        "$BASE/bin/$(uname -s)/jp2a" --color --chars="   ...',; clodxkO0KXNWM" --background=dark --height=50 "$BASE/assets/$1.jpg" 2>/dev/null
         echo "----------------------------------------------------------------------------"
     fi
 }
@@ -125,4 +123,4 @@ source ./script.sh
 main
 
 echo
-killall "$PLAYMUSIC" 2>/dev/null
+kill "$PLAYMUSIC"
