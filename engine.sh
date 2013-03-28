@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Terminal escape codes.
-C=$(tput clear)
-R=$(tput sgr0)
-B=$(tput bold)
+CLEAR=$(tput clear)
+RESET=$(tput sgr0)
+BOLD=$(tput bold)
 WHITE=$(tput setaf 7)
 GRAY=$(tput setaf 8)
 
@@ -24,7 +24,7 @@ case "$(uname -s)" in
 esac
 
 function clear {
-    echo -n "$C"
+    echo -n "$CLEAR"
 }
 
 function gencolor {
@@ -71,16 +71,16 @@ function think {
 
 function say {
     show $CURRSPRITE
-    echo -n "  $WHITE$B"
+    echo -n "  $WHITE$BOLD"
     echo -n $(gencolor "$1")
-    echo -n "$1$R: "
+    echo -n "$1$RESET: "
     typewrite "$2"
     pause
 }
 
 function show {
     CURRSPRITE=$1
-    echo -n "$C"
+    echo -n "$CLEAR"
     if [[ ! -z $CURRSPRITE ]]; then
         "$BASE/bin/$(uname -s)/jp2a" --color --chars="   ...',; clodxkO0KXNWM" --background=dark --height=50 "$BASE/assets/$1.jpg" 2>/dev/null
         echo "----------------------------------------------------------------------------"
@@ -100,7 +100,7 @@ function choice {
     while [[ $# -gt 1 ]]; do
         choices[$i]=$2
 
-        echo -n $(gencolor "$1")
+        echo -n $(gencolor "$2")
         echo -n "    $i. "
         typewrite "$1"
         echo
