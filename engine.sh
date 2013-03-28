@@ -13,6 +13,9 @@ TYPEDELAY=0.02
 # Engine.
 CURRSPRITE=
 BASE=$(dirname "$0")
+ORIG_SSTY=$(stty -g)
+
+stty -echo
 
 case "$(uname -s)" in 
     Darwin*)
@@ -123,6 +126,7 @@ function cleanup {
     # Stop lingering music processes.
     killall "$MUSICCMD" >/dev/null 2>&1
 
+    stty $(ORIG_STTY)
     clear
     exit
 }
