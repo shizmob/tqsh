@@ -8,7 +8,7 @@ WHITE=$(tput setaf 7)
 GRAY=$(tput setaf 8)
 
 # Settings
-TYPESPEED=0.02
+TYPEDELAY=0.02
 
 # Engine.
 CURRSPRITE=
@@ -16,10 +16,10 @@ BASE=$(dirname "$0")
 
 case "$(uname -s)" in 
     Darwin*)
-        PLAYMUSIC=afplay
+        MUSICCMD=afplay
         ;;
     Linux*)
-        PLAYMUSIC=aplay
+        MUSICCMD=aplay
         ;;
 esac
 
@@ -42,18 +42,22 @@ function pause {
 }
 
 function play_core {
-    while "$PLAYMUSIC" "$BASE/assets/$1"; do true; done
+    while "$MUSICCMD" "$BASE/assets/$1"; do true; done
 }
 
 function play {
-    play_core "$1" &
+    (play_core "$1" 2>/dev/null &)
+}
+
+function stop {
+    killall "$MUSICCMD" "$BASE/assets/$1"
 }
 
 function typewrite {
     msg=$1
     while [[ -n "$msg" ]]; do
         echo -n "${msg:0:1}"
-        sleep $TYPESPEED
+        sleep $TYPEDELAY
         msg=${msg:1}
     done
 }
@@ -81,12 +85,6 @@ function show {
         "$BASE/bin/$(uname -s)/jp2a" --color --chars="   ...',; clodxkO0KXNWM" --background=dark --height=50 "$BASE/assets/$1.jpg" 2>/dev/null
         echo "----------------------------------------------------------------------------"
     fi
-}
-
-function cmd {
-    echo
-    echo "$GRAY$1"
-    echo
 }
 
 function choice {
@@ -119,8 +117,17 @@ function choice {
     eval $func
 } 
 
+function cleanup {
+    # Stop lingering music processes.
+    echo
+    killall "$MUSICCMD" >/dev/null 2>&1
+
+    exit
+}
+trap 'cleanup' INT TERM EXIT
+
 source ./script.sh
 main
 
 echo
-kill "$PLAYMUSIC"
+killall "$MUSICCMD" >/dev/null 2>&1
